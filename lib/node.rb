@@ -8,7 +8,7 @@ class Node
   end
 
   def <=>(node)
-    return nil if node == nil
+    # return nil if node == nil
     data <=> node.data
   end
 end
