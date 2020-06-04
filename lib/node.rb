@@ -11,4 +11,8 @@ class Node
     # return nil if node == nil
     data <=> node.data
   end
+
+  def leaf?
+    self.left_child == nil && self.right_child == nil
+  end
 end
