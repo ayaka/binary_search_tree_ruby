@@ -1,10 +1,11 @@
 require_relative "node.rb"
 
 class Tree
-  attr_reader :root, :search_arr
+  attr_reader :root, :search_arr, :print_node_value
   def initialize(arr)
     # @search_arr = arr.uniq.sort
     @root = build_tree(arr.uniq.sort)
+    # @print_node_value = Proc.new { |node| puts node.data }
   end
 
   def insert(value)
@@ -48,6 +49,29 @@ class Tree
       return nil if parent_node == nil
       value < parent_node.data ? node = parent_node.left_child : node = parent_node.right_child
     end
+  end
+
+
+
+  def level_order(queue = [], value_arr = [])
+    @root == nil ? return : queue << @root
+    queue.each do |node|
+      queue << node.left_child unless node.left_child.nil?
+      queue << node.right_child unless node.right_child.nil?
+      block_given? ? yield(node) : value_arr << node.data
+    end
+    value_arr unless block_given?
+  end
+
+  # recursion version of level_order
+  def level_order_r(queue = [@root], value_arr = [], &block)
+    current = queue.shift
+    return if current == nil && block_given?
+    return value_arr if current == nil 
+    queue << current.left_child unless current.left_child.nil?
+    queue << current.right_child unless current.right_child.nil?
+    block_given? ? yield(current) : value_arr << current.data
+    level_order_r(queue, value_arr, &block)
   end
 
   private
@@ -125,13 +149,18 @@ tree = Tree.new(arr)
 # p tree.root.right_child.right_child.data
 # p tree.root.right_child.right_child.right_child.data
 
-tree.insert(7000)
-tree.insert(21)
+# tree.insert(7000)
+# tree.insert(21)
 # tree.insert(500)
 
-p tree.root
+# p tree.root
 # p tree.root.right_child.left_child.left_child.right_child.data
 # p tree.search_arr
-tree.delete(67)
+# tree.delete(67)
 # p tree.find(5)
-p tree.root
+# p tree.root
+
+p tree.level_order
+p tree.level_order { |node| puts node.data }
+p tree.level_order_r
+p tree.level_order_r { |node| puts node.data }
