@@ -54,10 +54,10 @@ class Tree
 
 
   def level_order(queue = [], value_arr = [])
-    @root == nil ? return : queue << @root
+    @root.nil? ? return : queue << @root
     queue.each do |node|
-      queue << node.left_child unless node.left_child.nil?
-      queue << node.right_child unless node.right_child.nil?
+      queue << node.left_child if node.left_child
+      queue << node.right_child if node.right_child
       block_given? ? yield(node) : value_arr << node.data
     end
     value_arr unless block_given?
@@ -66,12 +66,35 @@ class Tree
   # recursion version of level_order
   def level_order_r(queue = [@root], value_arr = [], &block)
     current = queue.shift
-    return if current == nil && block_given?
-    return value_arr if current == nil 
-    queue << current.left_child unless current.left_child.nil?
-    queue << current.right_child unless current.right_child.nil?
+    return if current.nil?
+    queue << current.left_child if current.left_child
+    queue << current.right_child if current.right_child
     block_given? ? yield(current) : value_arr << current.data
     level_order_r(queue, value_arr, &block)
+    return value_arr unless block_given?
+  end
+
+  def inorder(current = @root, value_arr = [], &block)
+    return if current.nil?
+    inorder(current.left_child, value_arr, &block) 
+    block_given? ? yield(current) : value_arr << current.data
+    inorder(current.right_child, value_arr, &block)  
+    value_arr unless block_given?
+  end
+
+  def preorder(current = @root, value_arr = [], &block)
+    return value_arr if current.nil?
+    block_given? ? yield(current) : value_arr << current.data
+    preorder(current.left_child, value_arr, &block)
+    preorder(current.right_child, value_arr, &block)
+    value_arr unless block_given?
+  end
+
+  def postorder(current = @root, value_arr = [], &block)
+    return if current.nil?
+    postorder(current.left_child, value_arr, &block)
+    postorder(current.right_child, value_arr, &block)
+    block_given? ? yield(current) : value_arr << current.data
   end
 
   private
@@ -131,8 +154,8 @@ class Tree
 end
 
 
-arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
-# arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+# arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 # arr = [1, 2, 3, 4, 5, 6, 7]
 # arr = [5, 15]
 
@@ -160,7 +183,15 @@ tree = Tree.new(arr)
 # p tree.find(5)
 # p tree.root
 
-p tree.level_order
-p tree.level_order { |node| puts node.data }
-p tree.level_order_r
-p tree.level_order_r { |node| puts node.data }
+# p tree.level_order
+# p tree.level_order { |node| puts node.data }
+# p tree.level_order_r
+# p tree.level_order_r { |node| puts node.data }
+
+# p tree.inorder { |node| puts node.data }
+p tree.preorder { |node| puts node.data }
+# p tree.postorder { |node| puts node.data }
+# p tree.inorder
+p tree.preorder
+# p tree.postorder
+
