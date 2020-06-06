@@ -51,8 +51,6 @@ class Tree
     end
   end
 
-
-
   def level_order(queue = [], value_arr = [])
     @root.nil? ? return : queue << @root
     queue.each do |node|
@@ -83,7 +81,7 @@ class Tree
   end
 
   def preorder(current = @root, value_arr = [], &block)
-    return value_arr if current.nil?
+    return if current.nil?
     block_given? ? yield(current) : value_arr << current.data
     preorder(current.left_child, value_arr, &block)
     preorder(current.right_child, value_arr, &block)
@@ -95,6 +93,16 @@ class Tree
     postorder(current.left_child, value_arr, &block)
     postorder(current.right_child, value_arr, &block)
     block_given? ? yield(current) : value_arr << current.data
+  end
+
+  def depth(current, current_level = -1, levels = [])
+    if current.nil?
+      levels << current_level
+      return levels.max
+    end
+    current_level += 1
+    depth(current.left_child, current_level, levels) 
+    depth(current.right_child, current_level, levels)
   end
 
   private
@@ -154,8 +162,8 @@ class Tree
 end
 
 
-# arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
+# arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 # arr = [1, 2, 3, 4, 5, 6, 7]
 # arr = [5, 15]
 
@@ -173,7 +181,7 @@ tree = Tree.new(arr)
 # p tree.root.right_child.right_child.right_child.data
 
 # tree.insert(7000)
-# tree.insert(21)
+tree.insert(21)
 # tree.insert(500)
 
 # p tree.root
@@ -189,9 +197,11 @@ tree = Tree.new(arr)
 # p tree.level_order_r { |node| puts node.data }
 
 # p tree.inorder { |node| puts node.data }
-p tree.preorder { |node| puts node.data }
+# p tree.preorder { |node| puts node.data }
 # p tree.postorder { |node| puts node.data }
 # p tree.inorder
-p tree.preorder
+# p tree.preorder
 # p tree.postorder
+
+p tree.depth(tree.root)
 
