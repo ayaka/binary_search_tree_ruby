@@ -4,7 +4,7 @@ class Tree
   attr_reader :root, :search_arr, :print_node_value
   def initialize(arr)
     # @search_arr = arr.uniq.sort
-    @root = build_tree(arr.uniq.sort)
+    @root = build_tree(arr)
     # @print_node_value = Proc.new { |node| puts node.data }
   end
 
@@ -105,9 +105,20 @@ class Tree
     depth(current.right_child, current_level, levels)
   end
 
+  def balanced?(root = @root)
+    level_gap = depth(root.left_child) - depth(root.right_child)
+    return false if level_gap > 1 || level_gap < -1
+    true
+  end
+
+  def rebalance!
+    @root = build_tree(level_order)
+  end
+
   private
   def build_tree(arr, parent_node = nil)
     return if arr.length == 0
+    arr = arr.uniq.sort
     middle_index = arr.length / 2
     node = Node.new(arr[middle_index])
     unless parent_node.nil?
@@ -169,7 +180,7 @@ arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
 
 tree = Tree.new(arr)
 
-# p tree.root
+p tree.root
 # p tree.root.left_child.data
 # p tree.root.left_child.left_child.data
 # p tree.root.left_child.right_child.data
@@ -182,6 +193,7 @@ tree = Tree.new(arr)
 
 # tree.insert(7000)
 tree.insert(21)
+tree.insert(20)
 # tree.insert(500)
 
 # p tree.root
@@ -203,5 +215,9 @@ tree.insert(21)
 # p tree.preorder
 # p tree.postorder
 
-p tree.depth(tree.root)
+# p tree.depth(tree.root)
+# p tree.balanced?
+tree.rebalance!
+p tree.root
+
 
