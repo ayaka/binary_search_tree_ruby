@@ -1,20 +1,16 @@
 require_relative "node.rb"
 
 class Tree
-  attr_reader :root, :search_arr, :print_node_value
+  attr_reader :root
   def initialize(arr)
-    # @search_arr = arr.uniq.sort
     @root = build_tree(arr)
-    # @print_node_value = Proc.new { |node| puts node.data }
   end
 
   def insert(value)
     node = Node.new(value)
     parent_node = @root
-    # search_arr << value
     loop do 
       if node == parent_node
-        # search_arr.pop
         return
       elsif node < parent_node
         parent_node.left_child.nil? ? (return parent_node.left_child = node) : parent_node = parent_node.left_child
@@ -38,7 +34,6 @@ class Tree
         parent_node.right_child = link_child_node(node)
       end
     end
-    # search_arr.delete(value)
   end
 
   def find(value)
@@ -173,14 +168,14 @@ class Tree
 end
 
 
-arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
+
+# arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
 # arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 # arr = [1, 2, 3, 4, 5, 6, 7]
 # arr = [5, 15]
 
-tree = Tree.new(arr)
+# tree = Tree.new(arr)
 
-p tree.root
 # p tree.root.left_child.data
 # p tree.root.left_child.left_child.data
 # p tree.root.left_child.right_child.data
@@ -192,8 +187,8 @@ p tree.root
 # p tree.root.right_child.right_child.right_child.data
 
 # tree.insert(7000)
-tree.insert(21)
-tree.insert(20)
+# tree.insert(21)
+# tree.insert(20)
 # tree.insert(500)
 
 # p tree.root
@@ -217,7 +212,7 @@ tree.insert(20)
 
 # p tree.depth(tree.root)
 # p tree.balanced?
-tree.rebalance!
-p tree.root
+# tree.rebalance!
+# p tree.root
 
 
