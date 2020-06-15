@@ -66,29 +66,41 @@ class Tree
     level_order_r(queue, value_arr, &block)
     return value_arr unless block_given?
   end
-
-  def inorder(current = root, value_arr = [], &block)
-    return if current.nil?
-    inorder(current.left_child, value_arr, &block) 
-    block_given? ? yield(current) : value_arr << current.data
-    inorder(current.right_child, value_arr, &block)  
-    value_arr unless block_given?
+  
+  ["inorder", "preorder", "postorder"].each do |order|
+    define_method(order) do |current = root, value_arr = [], &block|
+      return if current.nil?
+      block ? block.call(current) : value_arr << current.data if order == "preorder"
+      send(order, current.left_child, value_arr, &block) 
+      block ? block.call(current) : value_arr << current.data if order == "inorder"
+      send(order, current.right_child, value_arr, &block)  
+      block ? block.call(current) : value_arr << current.data if order == "postorder"
+      value_arr if block.nil?
+    end
   end
 
-  def preorder(current = root, value_arr = [], &block)
-    return if current.nil?
-    block_given? ? yield(current) : value_arr << current.data
-    preorder(current.left_child, value_arr, &block)
-    preorder(current.right_child, value_arr, &block)
-    value_arr unless block_given?
-  end
+  # def inorder(current = root, value_arr = [], &block)
+  #   return if current.nil?
+  #   inorder(current.left_child, value_arr, &block) 
+  #   block_given? ? yield(current) : value_arr << current.data
+  #   inorder(current.right_child, value_arr, &block)  
+  #   value_arr unless block_given?
+  # end
 
-  def postorder(current = root, value_arr = [], &block)
-    return if current.nil?
-    postorder(current.left_child, value_arr, &block)
-    postorder(current.right_child, value_arr, &block)
-    block_given? ? yield(current) : value_arr << current.data
-  end
+  # def preorder(current = root, value_arr = [], &block)
+  #   return if current.nil?
+  #   block_given? ? yield(current) : value_arr << current.data
+  #   preorder(current.left_child, value_arr, &block)
+  #   preorder(current.right_child, value_arr, &block)
+  #   value_arr unless block_given?
+  # end
+
+  # def postorder(current = root, value_arr = [], &block)
+  #   return if current.nil?
+  #   postorder(current.left_child, value_arr, &block)
+  #   postorder(current.right_child, value_arr, &block)
+  #   block_given? ? yield(current) : value_arr << current.data
+  # end
 
   def depth(current, current_level = -1, levels = [])
     if current.nil?
